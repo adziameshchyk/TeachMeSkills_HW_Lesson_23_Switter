@@ -1,0 +1,1 @@
+UPDATE public."user" SET name = ?, lastname = ?, login = ?, password = ? WHERE user_id = ?;
