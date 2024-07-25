@@ -5,7 +5,18 @@ import com.tms.entity.User;
 
 public class UserService {
 
-    private static final UserDAO userDAO = new UserDAO();
+    private static final UserDAO userDAO = UserDAO.getInstance();
+    private static UserService instance;
+
+    private UserService() {
+    }
+
+    public static UserService getInstance() {
+        if (instance != null) {
+            return instance;
+        }
+        return new UserService();
+    }
 
     public boolean add(User user) {
         if (isExistByLogin(user.getLogin())) {
@@ -24,6 +35,10 @@ public class UserService {
 
     public User findById(int userId) {
         return userDAO.findById(userId);
+    }
+
+    public User findByLogin(String login) {
+        return userDAO.findByLogin(login);
     }
 
     public void updateUser(int userId, User updatedUser) {

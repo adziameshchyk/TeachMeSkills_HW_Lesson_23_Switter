@@ -5,8 +5,9 @@ public class Role {
     private int roleId;
     private byte accessLevel;
 
-    public int getRoleId() {
-        return roleId;
+    public Role() {
+        this.roleId = 1;
+        this.accessLevel = 2;
     }
 
     public byte getAccessLevel() {

@@ -3,11 +3,11 @@ package com.tms.entity;
 public class User {
 
     private int userId;
-    private String login;
-    private String password;
-    private String name;
-    private String lastname;
-    private Role role;
+    private final String login;
+    private final String password;
+    private final String name;
+    private final String lastname;
+    private final Role role = new Role();
 
     public User(String name, String lastname, String login, String password) {
         this.name = name;
@@ -26,10 +26,6 @@ public class User {
 
     public String getPassword() {
         return password;
-    }
-
-    public Role getRole() {
-        return role;
     }
 
 

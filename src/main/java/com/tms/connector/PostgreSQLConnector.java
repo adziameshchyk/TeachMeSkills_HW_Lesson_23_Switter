@@ -3,6 +3,7 @@ package com.tms.connector;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -10,7 +11,7 @@ import java.util.Properties;
 
 public class PostgreSQLConnector {
 
-    private static final String DATABASE_CONNECTIVITY_PROPERTY_FILE_PATH = "src/main/resources/app.properties";
+    private static final String DATABASE_CONNECTIVITY_PROPERTY_FILE = "app.properties";
     private static final String PROPERTY_FILE_KEY_DATABASE_URL = "db.url";
     private static final String PROPERTY_FILE_KEY_DATABASE_USER = "db.user";
     private static final String PROPERTY_FILE_KEY_DATABASE_PASSWORD = "db.password";
@@ -58,8 +59,8 @@ public class PostgreSQLConnector {
 
     private static void loadProperties() {
         Properties properties = new Properties();
-        try (FileInputStream propertiesFileInputStream = new FileInputStream(DATABASE_CONNECTIVITY_PROPERTY_FILE_PATH)) {
-            properties.load(propertiesFileInputStream);
+        try (InputStream propertiesInputStream = PostgreSQLConnector.class.getClassLoader().getResourceAsStream(DATABASE_CONNECTIVITY_PROPERTY_FILE)) {
+            properties.load(propertiesInputStream);
         } catch (IOException e) {
             System.out.println(FAILED_TO_READ_PROPERTY_FILE_MESSAGE);
             e.printStackTrace();

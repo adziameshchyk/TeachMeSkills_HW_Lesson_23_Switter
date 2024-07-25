@@ -14,8 +14,21 @@ public class UserDAO {
     private static final String ADD_USER_SQL_PATH = "sql/addUser.sql";
     private static final String EXIST_BY_LOGIN_SQL_PATH = "sql/existByLogin.sql";
     private static final String FIND_BY_ID_SQL_PATH = "sql/findById.sql";
+    private static final String FIND_BY_LOGIN_SQL_PATH = "sql/findByLogin.sql";
     private static final String UPDATE_USER_SQL_PATH = "sql/updateUser.sql";
     private static final String DELETE_USER_SQL_PATH = "sql/deleteUser.sql";
+
+    private static UserDAO instance;
+
+    private UserDAO() {
+    }
+
+    public static UserDAO getInstance() {
+        if (instance != null) {
+            return instance;
+        }
+        return new UserDAO();
+    }
 
     public void add(User user) {
         String addUserQuery = SqlQueryLoader.loadQuery(ADD_USER_SQL_PATH);
@@ -60,14 +73,24 @@ public class UserDAO {
 
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
+            user = getUserFromResultSet(resultSet);
+        } catch (SQLException e) {
+            System.out.println("User search failed.");
+            e.printStackTrace();
+        }
+        return user;
+    }
 
-            if (resultSet.next()) {
-                String name = resultSet.getString("name");
-                String lastname = resultSet.getString("lastname");
-                String login = resultSet.getString("login");
-                String password = resultSet.getString("password");
-                user = new User(name, lastname, login, password);
-            }
+    public User findByLogin(String userLogin) {
+        String findByLoginQuery = SqlQueryLoader.loadQuery(FIND_BY_LOGIN_SQL_PATH);
+        User user = null;
+
+        try (Connection connection = PostgreSQLConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(findByLoginQuery)) {
+
+            preparedStatement.setString(1, userLogin);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            user = getUserFromResultSet(resultSet);
         } catch (SQLException e) {
             System.out.println("User search failed.");
             e.printStackTrace();
@@ -105,6 +128,17 @@ public class UserDAO {
             System.out.println("Failed to delete user.");
             e.printStackTrace();
         }
+    }
+
+    private static User getUserFromResultSet(ResultSet resultSet) throws SQLException {
+        if (resultSet.next()) {
+            String name = resultSet.getString("name");
+            String lastname = resultSet.getString("lastname");
+            String login = resultSet.getString("login");
+            String password = resultSet.getString("password");
+            return new User(name, lastname, login, password);
+        }
+        return null;
     }
 
 }
