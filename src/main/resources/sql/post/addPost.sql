@@ -1,0 +1,1 @@
+INSERT INTO public."post" (text, user_id) VALUES (?, ?);

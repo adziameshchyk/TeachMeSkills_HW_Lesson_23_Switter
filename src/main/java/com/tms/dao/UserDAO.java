@@ -11,12 +11,12 @@ import java.sql.SQLException;
 
 public class UserDAO {
 
-    private static final String ADD_USER_SQL_PATH = "sql/addUser.sql";
-    private static final String EXIST_BY_LOGIN_SQL_PATH = "sql/existByLogin.sql";
-    private static final String FIND_BY_ID_SQL_PATH = "sql/findById.sql";
-    private static final String FIND_BY_LOGIN_SQL_PATH = "sql/findByLogin.sql";
-    private static final String UPDATE_USER_SQL_PATH = "sql/updateUser.sql";
-    private static final String DELETE_USER_SQL_PATH = "sql/deleteUser.sql";
+    private static final String ADD_USER_SQL_PATH = "sql/user/addUser.sql";
+    private static final String EXIST_BY_LOGIN_SQL_PATH = "sql/user/existByLogin.sql";
+    private static final String FIND_BY_ID_SQL_PATH = "sql/user/findById.sql";
+    private static final String FIND_BY_LOGIN_SQL_PATH = "sql/user/findByLogin.sql";
+    private static final String UPDATE_USER_SQL_PATH = "sql/user/updateUser.sql";
+    private static final String DELETE_USER_SQL_PATH = "sql/user/deleteUser.sql";
 
     private static UserDAO instance;
 
@@ -98,6 +98,18 @@ public class UserDAO {
         return user;
     }
 
+    private static User getUserFromResultSet(ResultSet resultSet) throws SQLException {
+        if (resultSet.next()) {
+            int userId = resultSet.getInt("user_id");
+            String name = resultSet.getString("name");
+            String lastname = resultSet.getString("lastname");
+            String login = resultSet.getString("login");
+            String password = resultSet.getString("password");
+            return new User(userId, name, lastname, login, password);
+        }
+        return null;
+    }
+
     public void updateUser(int userId, User updatedUser) {
         String updateUserQuery = SqlQueryLoader.loadQuery(UPDATE_USER_SQL_PATH);
 
@@ -128,17 +140,6 @@ public class UserDAO {
             System.out.println("Failed to delete user.");
             e.printStackTrace();
         }
-    }
-
-    private static User getUserFromResultSet(ResultSet resultSet) throws SQLException {
-        if (resultSet.next()) {
-            String name = resultSet.getString("name");
-            String lastname = resultSet.getString("lastname");
-            String login = resultSet.getString("login");
-            String password = resultSet.getString("password");
-            return new User(name, lastname, login, password);
-        }
-        return null;
     }
 
 }

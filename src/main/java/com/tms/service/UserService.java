@@ -2,8 +2,12 @@ package com.tms.service;
 
 import com.tms.dao.UserDAO;
 import com.tms.entity.User;
+import com.tms.exception.UserAlreadyExistsException;
+import com.tms.servlet.UserServlet;
 
 public class UserService {
+
+    public static final String USER_ALREADY_EXISTS_MESSAGE = "User with this login already exists.";
 
     private static final UserDAO userDAO = UserDAO.getInstance();
     private static UserService instance;
@@ -18,10 +22,9 @@ public class UserService {
         return new UserService();
     }
 
-    public boolean add(User user) {
+    public boolean add(User user) throws UserAlreadyExistsException {
         if (isExistByLogin(user.getLogin())) {
-            System.out.println("User with this login already exists.");
-            return false;
+            throw new UserAlreadyExistsException(USER_ALREADY_EXISTS_MESSAGE);
         }
 
         userDAO.add(user);

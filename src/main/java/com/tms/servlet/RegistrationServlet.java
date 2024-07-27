@@ -1,6 +1,7 @@
 package com.tms.servlet;
 
 import com.tms.entity.User;
+import com.tms.exception.UserAlreadyExistsException;
 import com.tms.service.UserService;
 
 import javax.servlet.ServletException;
@@ -18,7 +19,7 @@ public class RegistrationServlet extends HttpServlet {
     public static final String LOGIN_HTTP_PARAMETER = "login";
     public static final String PASSWORD_HTTP_PARAMETER = "password";
 
-    public static final String SUCCESSFULLY_ADDED_MESSAGE = "added successfully.";
+    public static final String SUCCESSFULLY_ADDED_MESSAGE = " added successfully.";
     public static final String FAILED_ADDITIONAL_MESSAGE = "Failed to add user.";
 
     UserService userService = UserService.getInstance();
@@ -31,11 +32,15 @@ public class RegistrationServlet extends HttpServlet {
         String password = req.getParameter(PASSWORD_HTTP_PARAMETER);
         User user = new User(name, lastname, login, password);
 
-        boolean isAdded = userService.add(user);
-        if (isAdded) {
-            resp.getWriter().println(user.getLogin() + SUCCESSFULLY_ADDED_MESSAGE);
-        } else {
-            resp.getWriter().println(FAILED_ADDITIONAL_MESSAGE);
+        try {
+            boolean isAdded = userService.add(user);
+            if (isAdded) {
+                resp.getWriter().println(user.getLogin() + SUCCESSFULLY_ADDED_MESSAGE);
+            } else {
+                resp.getWriter().println(FAILED_ADDITIONAL_MESSAGE);
+            }
+        } catch (UserAlreadyExistsException e) {
+            resp.getWriter().println(e.getMessage());
         }
     }
 }

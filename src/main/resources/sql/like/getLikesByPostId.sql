@@ -1,0 +1,1 @@
+SELECT * FROM public."like" WHERE post_id = ?;

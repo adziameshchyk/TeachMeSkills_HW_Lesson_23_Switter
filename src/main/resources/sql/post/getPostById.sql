@@ -1,0 +1,1 @@
+SELECT * FROM public."post" WHERE post_id = ?;
