@@ -1,0 +1,1 @@
+INSERT INTO public."comment" (text, user_id, post_id) VALUES (?, ?, ?);

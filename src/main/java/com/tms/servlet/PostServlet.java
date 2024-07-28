@@ -11,12 +11,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-@WebServlet(urlPatterns = "/post", name = "PostServlet" )
+@WebServlet(urlPatterns = "/post", name = "PostServlet")
 public class PostServlet extends HttpServlet {
 
     public static final String USER_SESSION_ATTRIBUTE = "user";
-    public static final String POST_ID_ATTRIBUTE = "id";
+
+    public static final String POST_ID_PARAMETER = "id";
 
     public static final String ENCODING_STANDARD_UTF_8 = "UTF-8";
     public static final String TEXT_PLAIN_CONTEXT_TYPE = "text/plain";
@@ -27,14 +30,22 @@ public class PostServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int postId = Integer.parseInt(req.getParameter(POST_ID_ATTRIBUTE));
-        Post post = postService.getPostById(postId);
-        if (post != null) {
-            resp.setCharacterEncoding(ENCODING_STANDARD_UTF_8);
-            resp.setContentType(TEXT_PLAIN_CONTEXT_TYPE);
-            resp.getWriter().println(post);
+        String idParam = req.getParameter(POST_ID_PARAMETER);
+        resp.setCharacterEncoding(ENCODING_STANDARD_UTF_8);
+        resp.setContentType(TEXT_PLAIN_CONTEXT_TYPE);
+        if (idParam == null) {
+            List<Post> posts = postService.getAllPosts();
+            for (Post post : posts) {
+                resp.getWriter().println(post);
+            }
         } else {
-            resp.getWriter().println(POST_SEARCH_FAILED_MESSAGE);
+            int postId = Integer.parseInt(idParam);
+            Post post = postService.getPostById(postId);
+            if (post == null) {
+                resp.getWriter().println(POST_SEARCH_FAILED_MESSAGE);
+                return;
+            }
+            resp.getWriter().println(post);
         }
     }
 

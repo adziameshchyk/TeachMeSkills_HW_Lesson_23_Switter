@@ -9,19 +9,19 @@ import com.tms.service.LikeService;
 import com.tms.service.SqlQueryLoader;
 
 import javax.print.DocFlavor;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostDAO {
 
     private static final String ADD_POST_SQL_PATH = "sql/post/addPost.sql";
     private static final String GET_POST_BY_ID_SQL_PATH = "sql/post/getPostById.sql";
+    private static final String GET_ALL_POSTS_SQL_PATH = "sql/post/getAllPosts.sql";
 
     public static final String POST_NOT_ADDED_MESSAGE = "Post was not added.";
     public static final String POST_SEARCH_FAILED_MESSAGE = "Post search failed.";
+    public static final String POSTS_SEARCH_FAILED_MESSAGE = "Posts search failed.";
 
     private static final CommentService commentService = CommentService.getInstance();
     private static final LikeService likeService = LikeService.getInstance();
@@ -76,5 +76,29 @@ public class PostDAO {
             e.printStackTrace();
         }
         return post;
+    }
+
+    public List<Post> getAllPosts() {
+        String getAllPostsQuery = SqlQueryLoader.loadQuery(GET_ALL_POSTS_SQL_PATH);
+        List<Post> posts = new ArrayList<>();
+
+        try (Connection connection = PostgreSQLConnector.getConnection();
+             Statement statement = connection.createStatement()) {
+
+            ResultSet resultSet = statement.executeQuery(getAllPostsQuery);
+            while (resultSet.next()) {
+                int postId = resultSet.getInt("post_id");
+                String text = resultSet.getString("text");
+                int userId = resultSet.getInt("user_id");
+                List<Comment> comments = commentService.getCommentsByPostId(postId);
+                List<User> likes = likeService.getLikesByPostId(postId);
+                posts.add(new Post(postId, text, userId, comments, likes));
+            }
+
+        } catch (SQLException e) {
+            System.out.println(POSTS_SEARCH_FAILED_MESSAGE);
+            e.printStackTrace();
+        }
+        return posts;
     }
 }

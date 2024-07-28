@@ -16,7 +16,10 @@ import java.util.List;
 public class LikeDAO {
 
     private static final String GET_LIKES_BY_POST_ID_SQL_PATH = "sql/like/getLikesByPostId.sql";
+    private static final String ADD_LIKE_SQL_PATH = "sql/like/addLike.sql";
+
     public static final String LIKES_SEARCH_FAILED_MESSAGE = "Likes search failed.";
+    public static final String LIKE_NOT_ADDED_MESSAGE = "Like was not added.";
 
     private static final UserService userService = UserService.getInstance();
 
@@ -30,6 +33,21 @@ public class LikeDAO {
             return instance;
         }
         return new LikeDAO();
+    }
+
+    public void add(int postId, int userId) {
+        String addLikeByPostIdQuery = SqlQueryLoader.loadQuery(ADD_LIKE_SQL_PATH);
+
+        try (Connection connection = PostgreSQLConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(addLikeByPostIdQuery)) {
+
+            preparedStatement.setInt(1, postId);
+            preparedStatement.setInt(2, userId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(LIKE_NOT_ADDED_MESSAGE);
+            e.printStackTrace();
+        }
     }
 
     public List<User> getLikesByPostId(int postId) {
@@ -52,5 +70,4 @@ public class LikeDAO {
         }
         return likes;
     }
-
 }

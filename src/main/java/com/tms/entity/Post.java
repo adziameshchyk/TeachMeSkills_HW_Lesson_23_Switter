@@ -3,6 +3,7 @@ package com.tms.entity;
 import com.tms.service.UserService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Post {
 
@@ -54,14 +55,25 @@ public class Post {
         String lineSeparator = "----------------------------------------";
 
         sb.append(lineSeparator).append("\n");
-        sb.append("User: ").append(user.getName()).append(" ").append(user.getLastname()).append("\n");
-        sb.append(lineSeparator).append("\n");
+        sb.append("Post id = ").append(postId).append("\n").
+                append(lineSeparator).append("\n");
 
-        sb.append("Post:\n").append(text);
+        sb.append(user.getName()).append(" ").append(user.getLastname()).append(":\n").
+                append("\n").append(text).append("\n").
+        append(lineSeparator).append("\n");
 
-        sb.append(lineSeparator).append("\n");
-        sb.append("Comments: ").append(comments).append("\n");
-        sb.append("Likes: ").append(likes).append("\n");
+        sb.append("Comments: ").append("\n").
+                append(comments.stream()
+                        .map(Comment::toString)
+                        .collect(Collectors.joining("\n"))
+                ).append("\n").
+                append(lineSeparator).append("\n");
+
+        sb.append("Likes:\n").append("\n").
+                append(likes.stream()
+                        .map(u -> u.getName() + " " + u.getLastname())
+                        .collect(Collectors.joining("\n"))
+                ).append("\n");
         sb.append(lineSeparator);
 
         return sb.toString();

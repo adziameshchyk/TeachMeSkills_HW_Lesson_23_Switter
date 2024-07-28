@@ -21,6 +21,10 @@ public class CommentService {
         return new CommentService();
     }
 
+    public void add(Comment comment) {
+        commentDAO.add(comment);
+    }
+
     public List<Comment> getCommentsByPostId(int postId) {
         return commentDAO.getCommentsByPostId(postId);
     }

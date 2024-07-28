@@ -21,10 +21,11 @@ public class PostgreSQLConnector {
     public static final String FAILED_TO_READ_PROPERTY_FILE_MESSAGE = "Failed to read property file.";
     public static final String FAILED_TO_DATABASE_CONNECTION_MESSAGE = "Failed to establish database connection.";
 
-    private static Connection connection;
     private static String DATABASE_URL;
     private static String DATABASE_USER;
     private static String DATABASE_PASSWORD;
+
+    private static Connection connection;
 
     static {
         init();

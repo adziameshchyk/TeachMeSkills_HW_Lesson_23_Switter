@@ -3,6 +3,8 @@ package com.tms.service;
 import com.tms.dao.PostDAO;
 import com.tms.entity.Post;
 
+import java.util.List;
+
 public class PostService {
 
     private static final PostDAO postDAO = PostDAO.getInstance();
@@ -27,4 +29,7 @@ public class PostService {
         return postDAO.getPostById(postId);
     }
 
+    public List<Post> getAllPosts() {
+        return postDAO.getAllPosts();
+    }
 }

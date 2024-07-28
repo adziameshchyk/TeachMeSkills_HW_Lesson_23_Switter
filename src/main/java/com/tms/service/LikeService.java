@@ -20,9 +20,12 @@ public class LikeService {
         return new LikeService();
     }
 
+    public void add(int postId, int userId) {
+        likeDAO.add(postId, userId);
+    }
+
     public List<User> getLikesByPostId(int likeId) {
         return likeDAO.getLikesByPostId(likeId);
     }
-
 
 }

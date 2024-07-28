@@ -12,11 +12,22 @@ login=testLogin&password=testPassword
 
 ###
 
+POST http://localhost:8080/authorization
+Content-Type:application/x-www-form-urlencoded
+
+login=testLogin1&password=testPassword1
+
+###
+
 POST http://localhost:8080/logout
 
 ###
 
 GET http://localhost:8080/post?id=11
+
+###
+
+GET http://localhost:8080/post
 
 ###
 
@@ -31,3 +42,18 @@ My bloody rhythm of the sun — fuck the guns
 Fuck the criminal, fuck the screaming gangs
 Some people waiting for my sound, let me proud
 Ima freeman, Ima woah-woah-woah-woah-woah
+
+###
+
+POST http://localhost:8080/comment
+Content-Type:application/x-www-form-urlencoded
+
+post-id=11&text=Good Track!
+
+###
+
+POST http://localhost:8080/like
+Content-Type:application/x-www-form-urlencoded
+
+post-id=14
+
