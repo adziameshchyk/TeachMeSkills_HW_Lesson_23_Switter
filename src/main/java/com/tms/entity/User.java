@@ -7,13 +7,14 @@ public class User {
     private final String password;
     private final String name;
     private final String lastname;
-    private final Role role = new Role();
+    private final Role role;
 
     public User(String name, String lastname, String login, String password) {
         this.name = name;
         this.lastname = lastname;
         this.login = login;
         this.password = password;
+        role = new Role();
     }
 
     public User(int userId, String name, String lastname, String login, String password) {
@@ -22,6 +23,7 @@ public class User {
         this.password = password;
         this.name = name;
         this.lastname = lastname;
+        role = new Role();
     }
 
     public int getUserId() {
@@ -43,6 +45,10 @@ public class User {
 
     public String getLastname() {
         return lastname;
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     @Override

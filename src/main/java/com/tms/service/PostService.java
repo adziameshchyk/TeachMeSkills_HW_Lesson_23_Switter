@@ -32,4 +32,8 @@ public class PostService {
     public List<Post> getAllPosts() {
         return postDAO.getAllPosts();
     }
+
+    public void updatePost(Post updatedPost) {
+        postDAO.updatePost(updatedPost);
+    }
 }

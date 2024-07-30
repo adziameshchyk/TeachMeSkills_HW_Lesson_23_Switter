@@ -1,21 +1,28 @@
 POST http://localhost:8080/registration
 Content-Type:application/x-www-form-urlencoded
 
-name=testName&lastname=testLastname&login=testLogin&password=testPassword
+name=Emily&lastname=Clark&login=emilyclark&password=ClarkPassword321
 
 ###
 
 POST http://localhost:8080/authorization
 Content-Type:application/x-www-form-urlencoded
 
-login=testLogin&password=testPassword
+login=johndoe&password=Password123
 
 ###
 
 POST http://localhost:8080/authorization
 Content-Type:application/x-www-form-urlencoded
 
-login=testLogin1&password=testPassword1
+login=admin&password=adminPass
+
+###
+
+POST http://localhost:8080/authorization
+Content-Type:application/x-www-form-urlencoded
+
+login=adminLogin&password=adminPassword
 
 ###
 
@@ -23,15 +30,15 @@ POST http://localhost:8080/logout
 
 ###
 
-GET http://localhost:8080/post?id=11
+GET http://localhost:8080/posts?post-id=11
 
 ###
 
-GET http://localhost:8080/post
+GET http://localhost:8080/posts
 
 ###
 
-POST http://localhost:8080/post
+POST http://localhost:8080/posts
 Content-Type:text/plain
 
 My bloody rhythm of the sun — fuck the guns
@@ -45,14 +52,21 @@ Ima freeman, Ima woah-woah-woah-woah-woah
 
 ###
 
-POST http://localhost:8080/comment
+PUT http://localhost:8080/posts
+Content-Type:text/plain
+
+post-id=16&text=This is my first post in switter!
+
+###
+
+POST http://localhost:8080/comments
 Content-Type:application/x-www-form-urlencoded
 
 post-id=11&text=Good Track!
 
 ###
 
-POST http://localhost:8080/like
+POST http://localhost:8080/likes
 Content-Type:application/x-www-form-urlencoded
 
 post-id=14

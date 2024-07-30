@@ -18,6 +18,12 @@ public class LikeDAO {
     private static final String GET_LIKES_BY_POST_ID_SQL_PATH = "sql/like/getLikesByPostId.sql";
     private static final String ADD_LIKE_SQL_PATH = "sql/like/addLike.sql";
 
+    private static final int FIRST_PARAMETER_OF_SQL_QUERY = 1;
+    private static final int SECOND_PARAMETER_OF_SQL_QUERY = 2;
+
+    public static final String LIKE_COLUMN_LABEL = "like_id";
+    public static final String USER_ID_COLUMN_LABEL = "user_id";
+
     public static final String LIKES_SEARCH_FAILED_MESSAGE = "Likes search failed.";
     public static final String LIKE_NOT_ADDED_MESSAGE = "Like was not added.";
 
@@ -41,8 +47,8 @@ public class LikeDAO {
         try (Connection connection = PostgreSQLConnector.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(addLikeByPostIdQuery)) {
 
-            preparedStatement.setInt(1, postId);
-            preparedStatement.setInt(2, userId);
+            preparedStatement.setInt(FIRST_PARAMETER_OF_SQL_QUERY, postId);
+            preparedStatement.setInt(SECOND_PARAMETER_OF_SQL_QUERY, userId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(LIKE_NOT_ADDED_MESSAGE);
@@ -57,11 +63,11 @@ public class LikeDAO {
         try (Connection connection = PostgreSQLConnector.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(getLikeByPostIdQuery)) {
 
-            preparedStatement.setInt(1, postId);
+            preparedStatement.setInt(FIRST_PARAMETER_OF_SQL_QUERY, postId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                int likeId = resultSet.getInt("like_id");
-                int userId = resultSet.getInt("user_id");
+                int likeId = resultSet.getInt(LIKE_COLUMN_LABEL);
+                int userId = resultSet.getInt(USER_ID_COLUMN_LABEL);
                 likes.add(userService.findById(userId));
             }
         } catch (SQLException e) {

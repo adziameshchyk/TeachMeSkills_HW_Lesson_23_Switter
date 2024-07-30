@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = "/like", name = "LikeServlet")
+@WebServlet(urlPatterns = "/likes", name = "LikeServlet")
 public class LikeServlet extends HttpServlet {
 
     public static final String USER_SESSION_ATTRIBUTE = "user";

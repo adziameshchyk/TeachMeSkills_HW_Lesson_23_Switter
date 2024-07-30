@@ -14,7 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 
-@WebServlet(urlPatterns = "/comment", name = "CommentServlet")
+@WebServlet(urlPatterns = "/comments", name = "CommentServlet")
 public class CommentServlet extends HttpServlet {
 
     public static final String USER_SESSION_ATTRIBUTE = "user";

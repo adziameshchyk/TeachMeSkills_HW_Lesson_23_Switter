@@ -18,8 +18,17 @@ public class PostDAO {
     private static final String ADD_POST_SQL_PATH = "sql/post/addPost.sql";
     private static final String GET_POST_BY_ID_SQL_PATH = "sql/post/getPostById.sql";
     private static final String GET_ALL_POSTS_SQL_PATH = "sql/post/getAllPosts.sql";
+    private static final String UPDATE_POST_SQL_PATH = "sql/post/updatePost.sql";
+
+    private static final int FIRST_PARAMETER_OF_SQL_QUERY = 1;
+    private static final int SECOND_PARAMETER_OF_SQL_QUERY = 2;
+
+    public static final String POST_COLUMN_LABEL = "post_id";
+    public static final String TEXT_COLUMN_LABEL = "text";
+    public static final String USER_ID_COLUMN_LABEL = "user_id";
 
     public static final String POST_NOT_ADDED_MESSAGE = "Post was not added.";
+    public static final String POST_NOT_UPDATE_MESSAGE = "Post was not update.";
     public static final String POST_SEARCH_FAILED_MESSAGE = "Post search failed.";
     public static final String POSTS_SEARCH_FAILED_MESSAGE = "Posts search failed.";
 
@@ -44,14 +53,13 @@ public class PostDAO {
         try (Connection connection = PostgreSQLConnector.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(addPostQuery)) {
 
-            preparedStatement.setString(1, post.getText());
-            preparedStatement.setInt(2, post.getUserId());
+            preparedStatement.setString(FIRST_PARAMETER_OF_SQL_QUERY, post.getText());
+            preparedStatement.setInt(SECOND_PARAMETER_OF_SQL_QUERY, post.getUserId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(POST_NOT_ADDED_MESSAGE);
             e.printStackTrace();
         }
-
     }
 
     public Post getPostById(int postId) {
@@ -61,11 +69,11 @@ public class PostDAO {
         try (Connection connection = PostgreSQLConnector.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(getPostByIdQuery)) {
 
-            preparedStatement.setInt(1, postId);
+            preparedStatement.setInt(FIRST_PARAMETER_OF_SQL_QUERY, postId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                String text = resultSet.getString("text");
-                int userId = resultSet.getInt("user_id");
+                String text = resultSet.getString(TEXT_COLUMN_LABEL);
+                int userId = resultSet.getInt(USER_ID_COLUMN_LABEL);
                 List<Comment> comments = commentService.getCommentsByPostId(postId);
                 List<User> likes = likeService.getLikesByPostId(postId);
                 post = new Post(postId, text, userId, comments, likes);
@@ -87,9 +95,9 @@ public class PostDAO {
 
             ResultSet resultSet = statement.executeQuery(getAllPostsQuery);
             while (resultSet.next()) {
-                int postId = resultSet.getInt("post_id");
-                String text = resultSet.getString("text");
-                int userId = resultSet.getInt("user_id");
+                int postId = resultSet.getInt(POST_COLUMN_LABEL);
+                String text = resultSet.getString(TEXT_COLUMN_LABEL);
+                int userId = resultSet.getInt(USER_ID_COLUMN_LABEL);
                 List<Comment> comments = commentService.getCommentsByPostId(postId);
                 List<User> likes = likeService.getLikesByPostId(postId);
                 posts.add(new Post(postId, text, userId, comments, likes));
@@ -100,5 +108,20 @@ public class PostDAO {
             e.printStackTrace();
         }
         return posts;
+    }
+
+    public void updatePost(Post updatedPost) {
+        String updatePostQuery = SqlQueryLoader.loadQuery(UPDATE_POST_SQL_PATH);
+
+        try (Connection connection = PostgreSQLConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(updatePostQuery)) {
+
+            preparedStatement.setString(FIRST_PARAMETER_OF_SQL_QUERY, updatedPost.getText());
+            preparedStatement.setInt(SECOND_PARAMETER_OF_SQL_QUERY, updatedPost.getPostId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(POST_NOT_UPDATE_MESSAGE);
+            e.printStackTrace();
+        }
     }
 }

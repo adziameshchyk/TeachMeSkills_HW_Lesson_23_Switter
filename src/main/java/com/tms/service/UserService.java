@@ -3,13 +3,14 @@ package com.tms.service;
 import com.tms.dao.UserDAO;
 import com.tms.entity.User;
 import com.tms.exception.UserAlreadyExistsException;
-import com.tms.servlet.UserServlet;
 
 public class UserService {
 
     public static final String USER_ALREADY_EXISTS_MESSAGE = "User with this login already exists.";
+    public static final String USER_ADDED_SUCCESSFULLY_EXISTS_MESSAGE = "User added successfully.";
 
     private static final UserDAO userDAO = UserDAO.getInstance();
+    private static final RoleService roleService = RoleService.getInstance();
     private static UserService instance;
 
     private UserService() {
@@ -28,7 +29,9 @@ public class UserService {
         }
 
         userDAO.add(user);
-        System.out.println("User added successfully.");
+        int userId = findByLogin(user.getLogin()).getUserId();
+        roleService.setSimpleRoleById(userId);
+        System.out.println(USER_ADDED_SUCCESSFULLY_EXISTS_MESSAGE);
         return true;
     }
 
@@ -51,4 +54,5 @@ public class UserService {
     public void deleteUserById(int userId) {
         userDAO.deleteUserById(userId);
     }
+
 }

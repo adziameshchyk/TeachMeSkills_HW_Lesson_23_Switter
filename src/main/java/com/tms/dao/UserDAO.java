@@ -2,7 +2,9 @@ package com.tms.dao;
 
 import com.tms.connector.PostgreSQLConnector;
 import com.tms.entity.User;
+import com.tms.service.RoleService;
 import com.tms.service.SqlQueryLoader;
+import com.tms.service.UserService;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,6 +20,25 @@ public class UserDAO {
     private static final String UPDATE_USER_SQL_PATH = "sql/user/updateUser.sql";
     private static final String DELETE_USER_SQL_PATH = "sql/user/deleteUser.sql";
 
+    private static final int FIRST_PARAMETER_OF_SQL_QUERY = 1;
+    private static final int SECOND_PARAMETER_OF_SQL_QUERY = 2;
+    private static final int THIRD_PARAMETER_OF_SQL_QUERY = 3;
+    private static final int FOURTH_PARAMETER_OF_SQL_QUERY = 4;
+    private static final int FIFTH_PARAMETER_OF_SQL_QUERY = 5;
+
+    public static final String USER_ID_COLUMN_LABEL = "user_id";
+    public static final String NAME_COLUMN_LABEL = "name";
+    public static final String LASTNAME_COLUMN_LABEL = "lastname";
+    public static final String LOGIN_COLUMN_LABEL = "login";
+    public static final String PASSWORD_COLUMN_LABEL = "password";
+
+    public static final String USER_NOT_ADDED_MESSAGE =  "User was not added.";
+    public static final String FAILED_VERIFY_USER_MESSAGE =  "Failed to verify user.";
+    public static final String USER_SEARCH_FAILED_MESSAGE =  "User search failed.";
+    public static final String USER_UPDATE_FAILED_MESSAGE =  "Failed to update user.";
+    public static final String USER_DELETE_FAILED_MESSAGE =  "Failed to delete user.";
+
+    private static final UserService userService = UserService.getInstance();
     private static UserDAO instance;
 
     private UserDAO() {
@@ -36,13 +57,13 @@ public class UserDAO {
         try (Connection connection = PostgreSQLConnector.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(addUserQuery)) {
 
-            preparedStatement.setString(1, user.getName());
-            preparedStatement.setString(2, user.getLastname());
-            preparedStatement.setString(3, user.getLogin());
-            preparedStatement.setString(4, user.getPassword());
+            preparedStatement.setString(FIRST_PARAMETER_OF_SQL_QUERY, user.getName());
+            preparedStatement.setString(SECOND_PARAMETER_OF_SQL_QUERY, user.getLastname());
+            preparedStatement.setString(THIRD_PARAMETER_OF_SQL_QUERY, user.getLogin());
+            preparedStatement.setString(FOURTH_PARAMETER_OF_SQL_QUERY, user.getPassword());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("User was not added.");
+            System.out.println(USER_NOT_ADDED_MESSAGE);
             e.printStackTrace();
         }
     }
@@ -54,11 +75,11 @@ public class UserDAO {
         try (Connection connection = PostgreSQLConnector.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(existByLoginQuery)) {
 
-            preparedStatement.setString(1, login);
+            preparedStatement.setString(FIRST_PARAMETER_OF_SQL_QUERY, login);
             ResultSet resultSet = preparedStatement.executeQuery();
             isExist = resultSet.next();
         } catch (SQLException e) {
-            System.out.println("Failed to verify user.");
+            System.out.println(FAILED_VERIFY_USER_MESSAGE);
             e.printStackTrace();
         }
         return isExist;
@@ -71,11 +92,11 @@ public class UserDAO {
         try (Connection connection = PostgreSQLConnector.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(findByIdQuery)) {
 
-            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(FIRST_PARAMETER_OF_SQL_QUERY, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             user = getUserFromResultSet(resultSet);
         } catch (SQLException e) {
-            System.out.println("User search failed.");
+            System.out.println(USER_SEARCH_FAILED_MESSAGE);
             e.printStackTrace();
         }
         return user;
@@ -88,11 +109,11 @@ public class UserDAO {
         try (Connection connection = PostgreSQLConnector.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(findByLoginQuery)) {
 
-            preparedStatement.setString(1, userLogin);
+            preparedStatement.setString(FIRST_PARAMETER_OF_SQL_QUERY, userLogin);
             ResultSet resultSet = preparedStatement.executeQuery();
             user = getUserFromResultSet(resultSet);
         } catch (SQLException e) {
-            System.out.println("User search failed.");
+            System.out.println(USER_SEARCH_FAILED_MESSAGE);
             e.printStackTrace();
         }
         return user;
@@ -100,11 +121,11 @@ public class UserDAO {
 
     private static User getUserFromResultSet(ResultSet resultSet) throws SQLException {
         if (resultSet.next()) {
-            int userId = resultSet.getInt("user_id");
-            String name = resultSet.getString("name");
-            String lastname = resultSet.getString("lastname");
-            String login = resultSet.getString("login");
-            String password = resultSet.getString("password");
+            int userId = resultSet.getInt(USER_ID_COLUMN_LABEL);
+            String name = resultSet.getString(NAME_COLUMN_LABEL);
+            String lastname = resultSet.getString(LASTNAME_COLUMN_LABEL);
+            String login = resultSet.getString(LOGIN_COLUMN_LABEL);
+            String password = resultSet.getString(PASSWORD_COLUMN_LABEL);
             return new User(userId, name, lastname, login, password);
         }
         return null;
@@ -116,14 +137,14 @@ public class UserDAO {
         try (Connection connection = PostgreSQLConnector.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(updateUserQuery)) {
 
-            preparedStatement.setString(1, updatedUser.getName());
-            preparedStatement.setString(2, updatedUser.getLastname());
-            preparedStatement.setString(3, updatedUser.getLogin());
-            preparedStatement.setString(4, updatedUser.getPassword());
-            preparedStatement.setInt(5, userId);
+            preparedStatement.setString(FIRST_PARAMETER_OF_SQL_QUERY, updatedUser.getName());
+            preparedStatement.setString(SECOND_PARAMETER_OF_SQL_QUERY, updatedUser.getLastname());
+            preparedStatement.setString(THIRD_PARAMETER_OF_SQL_QUERY, updatedUser.getLogin());
+            preparedStatement.setString(FOURTH_PARAMETER_OF_SQL_QUERY, updatedUser.getPassword());
+            preparedStatement.setInt(FIFTH_PARAMETER_OF_SQL_QUERY, userId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Failed to update user.");
+            System.out.println(USER_UPDATE_FAILED_MESSAGE);
             e.printStackTrace();
         }
     }
@@ -137,7 +158,7 @@ public class UserDAO {
             preparedStatement.setInt(1, userId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Failed to delete user.");
+            System.out.println(USER_DELETE_FAILED_MESSAGE);
             e.printStackTrace();
         }
     }

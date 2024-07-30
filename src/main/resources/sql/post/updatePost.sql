@@ -1,0 +1,1 @@
+UPDATE public."post" SET text = ? WHERE post_id = ?;

@@ -1,0 +1,1 @@
+INSERT INTO public."role" (access_level, user_id) VALUES (0, ?);

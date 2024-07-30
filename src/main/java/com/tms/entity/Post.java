@@ -18,6 +18,12 @@ public class Post {
         this.userId = userId;
     }
 
+    public Post(int postId, String text, int userId) {
+        this.postId = postId;
+        this.text = text;
+        this.userId = userId;
+    }
+
     public Post(int postId, String text, int userId, List<Comment> comments, List<User> likes) {
         this.postId = postId;
         this.text = text;

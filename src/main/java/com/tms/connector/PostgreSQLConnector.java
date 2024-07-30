@@ -25,19 +25,13 @@ public class PostgreSQLConnector {
     private static String DATABASE_USER;
     private static String DATABASE_PASSWORD;
 
-    private static Connection connection;
-
     static {
         init();
         loadProperties();
     }
     public static Connection getConnection() throws SQLException {
-        if (connection != null && !connection.isClosed()) {
-            return connection;
-        }
-
         try {
-            return connection = DriverManager.getConnection(DATABASE_URL, DATABASE_USER, DATABASE_PASSWORD);
+            return DriverManager.getConnection(DATABASE_URL, DATABASE_USER, DATABASE_PASSWORD);
         } catch (SQLException e) {
             System.out.println(FAILED_TO_DATABASE_CONNECTION_MESSAGE);
             e.printStackTrace();
