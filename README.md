@@ -1,10 +1,6 @@
-# Task:   
-	CRUD service via Servlet.   
-	Add a user, delete by ID or delete all,   
-	Modification of a field for a User with a specific ID.   
-	Display all information about the user if requested by ID.   
-	Or display all users if the ID is not defined.   
-	Do all this via jdbc  
+# Task:     
+Create a web application in Java that implements user, post, comment, and like management using Jakarta Servlet and PostgreSQL. Set up the database, implement CRUD operations, and deploy the application on a server, ensuring it functions correctly through the provided API endpoints.
+
  ---
 
 
